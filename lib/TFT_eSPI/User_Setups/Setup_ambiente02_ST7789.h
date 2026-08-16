@@ -13,6 +13,10 @@
 #define TFT_RST  PIN_TFT_RST
 #define TFT_BL   PIN_TFT_BL
 
+// Touch controller (if present on the module)
+#define TOUCH_CS PIN_TOUCH_CS
+#define TOUCH_IRQ -1
+
 #define LOAD_GFXFF
 #define SMOOTH_FONT
 

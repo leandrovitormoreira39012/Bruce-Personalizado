@@ -19,6 +19,10 @@
 #define TFT_WIDTH       128
 #define TFT_HEIGHT      160
 
+/* Touch (if present on the display) */
+#define PIN_TOUCH_CS    33
+#define PIN_TOUCH_IRQ   -1
+
 /* SD Card (SPI) */
 #define PIN_SD_CS       4
 
