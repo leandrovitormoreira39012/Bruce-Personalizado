@@ -1,0 +1,9 @@
+MERGE: add-ambientes-boards → main
+
+Branches merged:
+- add-ambientes-boards (as alterações com os 6 ambientes)
+INTO
+- main (branch principal)
+
+Resultado: Agora todas as alterações estão juntas no main!
+Você pode descompactar/fazer git pull e terá tudo em um só lugar.
