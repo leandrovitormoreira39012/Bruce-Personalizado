@@ -1,0 +1,17 @@
+name: Compilar Marauder
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar PlatformIO
+        run: pip install -U platformio
+      - name: Compilar Marauder
+        run: pio run -e marauder-compacto-full
+      - name: Salvar Arquivo .bin
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-marauder
+          path: .pio/build/marauder-compacto-full/firmware.bin
