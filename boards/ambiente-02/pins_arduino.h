@@ -3,49 +3,50 @@
 #ifndef PINS_ARDUINO_AMBIENTE_02_H
 #define PINS_ARDUINO_AMBIENTE_02_H
 
-/* SPI */
+/* SPI Compartilhado (S3) */
 #define PIN_SPI_SCK     18
-#define PIN_SPI_MOSI    23
-#define PIN_SPI_MISO    19
-#define PIN_SPI_SS      5
+#define PIN_SPI_MOSI    11
+#define PIN_SPI_MISO    10
+#define PIN_SPI_SS      4
 
-/* ST7789 Display */
+/* Display 2.8" ST7789 240x320 */
 #define PIN_TFT_CS      17
 #define PIN_TFT_DC      16
 #define PIN_TFT_RST     15
-#define PIN_TFT_BL      14
+#define PIN_TFT_BL      6
 #define TFT_WIDTH       240
 #define TFT_HEIGHT      320
 
-/* Touch (if XPT2046) */
-#define PIN_TOUCH_CS    21
+/* Touch Controller */
+#define PIN_TOUCH_CS    5
+#define PIN_TOUCH_IRQ   -1
 
-/* SD Card */
+/* SD Card (SPI) */
 #define PIN_SD_CS       4
 
-/* NRF24 */
-#define PIN_NRF24_CE    25
-#define PIN_NRF24_CS    PIN_SPI_SS
+/* NRF24L01+PA */
+#define PIN_NRF24_CE    13
+#define PIN_NRF24_CS    12
 
 /* CC1101 */
-#define PIN_CC1101_GDO0 26
-#define PIN_CC1101_CS   22
+#define PIN_CC1101_GDO0 45
+#define PIN_CC1101_CS   21
 
-/* IR */
-#define PIN_IR_TX       27
-#define PIN_IR_RX       33
+/* Infravermelho (IR) */
+#define PIN_IR_TX       37
+#define PIN_IR_RX       38
 
-/* GPS */
-#define PIN_GPS_TX      1
-#define PIN_GPS_RX      3
+/* GPS (UART) */
+#define PIN_GPS_TX      40
+#define PIN_GPS_RX      39
 
 /* PN532 (I2C) */
-#define PIN_I2C_SDA     4
-#define PIN_I2C_SCL     5
+#define PIN_I2C_SDA     8
+#define PIN_I2C_SCL     9
 
-/* Joystick */
-#define PIN_JOY_VRX     36
-#define PIN_JOY_VRY     37
-#define PIN_JOY_SW      38
+/* Joystick KY-023 */
+#define PIN_JOY_VRX     1
+#define PIN_JOY_VRY     2
+#define PIN_JOY_SW      3
 
 #endif /* PINS_ARDUINO_AMBIENTE_02_H */
