@@ -1,4 +1,4 @@
-name: Compilar Marauder Mini Full ambiente-03
+name: Compilar Marauder Full ambiente-02
 
 on:
   push:
@@ -24,10 +24,10 @@ jobs:
           pip install platformio
 
       - name: Run PlatformIO Build
-        run: pio run -e ambiente-03
+        run: pio run -e ambiente-02
 
       - name: Archive Firmware Artifact
         uses: actions/upload-artifact@v4
         with:
           name: firmware-marauder
-          path: .pio/build/ambiente-03/*.bin
+          path: .pio/build/ambiente-02/*.bin
