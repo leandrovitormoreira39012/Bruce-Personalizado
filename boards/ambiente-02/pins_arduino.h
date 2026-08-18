@@ -3,7 +3,7 @@
 #ifndef PINS_ARDUINO_AMBIENTE_02_H
 #define PINS_ARDUINO_AMBIENTE_02_H
 
-/* SPI Compartilhado (S3) - Ajustado para Pinos Seguros */
+/* SPI Compartilhado (S3) - Atualizado para Pinos Seguros */
 #define PIN_SPI_SCK     12
 #define PIN_SPI_MOSI    11
 #define PIN_SPI_MISO    10
@@ -17,16 +17,16 @@
 #define TFT_WIDTH       240
 #define TFT_HEIGHT      320
 
-/* Touch Controller */
-#define PIN_TOUCH_CS    33
+/* Touch Controller (Movido para 41) */
+#define PIN_TOUCH_CS    41
 #define PIN_TOUCH_IRQ   -1
 
 /* SD Card (SPI) */
 #define PIN_SD_CS       4
 
-/* NRF24L01+PA */
+/* NRF24L01+PA (CS movido para 42) */
 #define PIN_NRF24_CE    13
-#define PIN_NRF24_CS    12
+#define PIN_NRF24_CS    42
 
 /* CC1101 */
 #define PIN_CC1101_GDO0 45
