@@ -3,10 +3,10 @@
 #ifndef PINS_ARDUINO_AMBIENTE_02_H
 #define PINS_ARDUINO_AMBIENTE_02_H
 
-/* SPI */
-#define PIN_SPI_SCK     18
-#define PIN_SPI_MOSI    23
-#define PIN_SPI_MISO    19
+/* SPI (Ajustado para os pinos seguros do S3) */
+#define PIN_SPI_SCK     12
+#define PIN_SPI_MOSI    11
+#define PIN_SPI_MISO    10
 #define PIN_SPI_SS      5
 
 /* ST7789 Display */
@@ -18,7 +18,7 @@
 #define TFT_HEIGHT      320
 
 /* Touch (if XPT2046) */
-#define PIN_TOUCH_CS    21
+#define PIN_TOUCH_CS    41
 
 /* SD Card */
 #define PIN_SD_CS       4
@@ -35,17 +35,17 @@
 #define PIN_IR_TX       27
 #define PIN_IR_RX       33
 
-/* GPS */
-#define PIN_GPS_TX      1
-#define PIN_GPS_RX      3
+/* GPS (Movido para 39 e 40 para evitar conflito com o Joystick) */
+#define PIN_GPS_TX      39
+#define PIN_GPS_RX      40
 
-/* PN532 (I2C) */
-#define PIN_I2C_SDA     4
-#define PIN_I2C_SCL     5
+/* PN532 (I2C) (Movido para 8 e 9 para não conflitar com SD e SPI) */
+#define PIN_I2C_SDA     8
+#define PIN_I2C_SCL     9
 
 /* Joystick */
-#define PIN_JOY_VRX     36
-#define PIN_JOY_VRY     37
-#define PIN_JOY_SW      38
+#define PIN_JOY_VRX     1
+#define PIN_JOY_VRY     2
+#define PIN_JOY_SW      6
 
 #endif /* PINS_ARDUINO_AMBIENTE_02_H */
