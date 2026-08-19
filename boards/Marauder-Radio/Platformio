@@ -11,14 +11,15 @@ build_flags =
 -Iboards/Marauder-Radio
     -DDEVICE_NAME='"Marauder Radio"'
 
-; SPI (compartilhado)
+	; SPI (compartilhado)
     -DSPI_SCK_PIN=18
     -DSPI_MOSI_PIN=23
     -DSPI_MISO_PIN=19
     -DSPI_SS_PIN=5
 
-; Display 2.8 ST7789 240x320 + Touchscreen
-    -DHAS_SCREEN=1
+	; Display 2.8 ST7789 240x320 + Touchscreen
+    -DST7789_DRIVER=1
+	-DHAS_SCREEN=1
     -DTFT_WIDTH=240
     -DTFT_HEIGHT=320
     -DTFT_MISO=SPI_MISO_PIN
@@ -30,7 +31,7 @@ build_flags =
     -DTFT_BL=14
     -DTOUCH_CS=21
 
-    ; SD card (SPI)
+	; SD card (SPI)
     -DSDCARD_CS=4
     -DSDCARD_MISO=SPI_MISO_PIN
     -DSDCARD_MOSI_PIN=SPI_MOSI_PIN
@@ -40,7 +41,7 @@ build_flags =
     -DTOUCH_CS=33
     -DTOUCH_IRQ=-1
 
-    ; Nrf24l01+Pna (2.4 Ghz)
+    ; Nrf24l01+Pna (2.4G.hz)
     -DNRF24_CE_PIN=25
     -DNRF24_SS_PIN=SPI_SS_PIN
 
@@ -48,13 +49,13 @@ build_flags =
     -DCC1101_GDO0_PIN=26
     -DCC1101_SS_PIN=22
 
-    ; Infravermelho (separado em 2 módulos. Transmissor e Receptor)
+    ; Infravermelho (HX-53, HX-M121)
     -DIR_TX_PIN=27
     -DIR_RX_PIN=33
 
     ; GPS (Neo 6m V2)
-    -DSERIAL_TX=1
-    -DSERIAL_RX=3
+    -DSERIAL_TX=39
+    -DSERIAL_RX=40
     -DGPS_SERIAL_TX=SERIAL_TX
     -DGPS_SERIAL_RX=SERIAL_RX
 
@@ -62,8 +63,16 @@ build_flags =
     -DSYS_I2C_SDA=4
     -DSYS_I2C_SCL=5
 
-    ; Joystick (ky-043)
-    -DJOY_VRX_PIN=36
-    -DJOY_VRY_PIN=37
-    -DJOY_SW_PIN=38
+    ; Joystick (ky043)
+    -DJOY_VRX=36
+    -DJOY_VRY=37
+    -DJOY_SW=6
+
+lib_deps =
+    ${env.lib_deps}
+
+
+
+
+
 
