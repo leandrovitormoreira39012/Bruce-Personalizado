@@ -39,3 +39,31 @@ build_flags =
     ; Touch (XPT2046 ou similar)
     -DTOUCH_CS=33
     -DTOUCH_IRQ=-1
+
+    ; Nrf24l01+Pna (2.4 Ghz)
+    -DNRF24_CE_PIN=25
+    -DNRF24_SS_PIN=SPI_SS_PIN
+
+    ; Cc1101(433mhz)
+    -DCC1101_GDO0_PIN=26
+    -DCC1101_SS_PIN=22
+
+    ; Infravermelho (separado em 2 módulos. Transmissor e Receptor)
+    -DIR_TX_PIN=27
+    -DIR_RX_PIN=33
+
+    ; GPS (Neo 6m V2)
+    -DSERIAL_TX=1
+    -DSERIAL_RX=3
+    -DGPS_SERIAL_TX=SERIAL_TX
+    -DGPS_SERIAL_RX=SERIAL_RX
+
+    ; PN532 - NFC (I2C)
+    -DSYS_I2C_SDA=4
+    -DSYS_I2C_SCL=5
+
+    ; Joystick (ky-043)
+    -DJOY_VRX_PIN=36
+    -DJOY_VRY_PIN=37
+    -DJOY_SW_PIN=38
+
