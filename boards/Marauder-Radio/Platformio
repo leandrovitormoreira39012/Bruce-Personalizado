@@ -1,1 +1,41 @@
+; Esp32 S3 N16R8 + Display TFT 2.8 240x320 + Touch + SD Card + Nrf24l01 + Cc1101 + Módulo IR 
 
+board = [esp32-s3-devkitc-1-psram]
+board_build.partitions = custom_16Mb.csv
+board_upload.maximum_size = 16777216
+build_src_filter = ${env.build_src_filter} +<../boards/Marauder-Radio>
+extends = env:esp32-s3-devkitc-1
+build_flags =
+	${env:esp32-s3-devkitc-1.build_flags}
+	-D BOARD_HAS_PSRAM=1
+-Iboards/Marauder-Radio
+    -DDEVICE_NAME='"Marauder Radio"'
+
+; SPI (compartilhado)
+    -DSPI_SCK_PIN=18
+    -DSPI_MOSI_PIN=23
+    -DSPI_MISO_PIN=19
+    -DSPI_SS_PIN=5
+
+; Display 2.8 ST7789 240x320 + Touchscreen
+    -DHAS_SCREEN=1
+    -DTFT_WIDTH=240
+    -DTFT_HEIGHT=320
+    -DTFT_MISO=SPI_MISO_PIN
+    -DTFT_MOSI=SPI_MOSI_PIN
+    -DTFT_SCK=SPI_SCK_PIN
+    -DTFT_CS=17
+    -DTFT_DC=16
+    -DTFT_RST=15
+    -DTFT_BL=14
+    -DTOUCH_CS=21
+
+    ; SD card (SPI)
+    -DSDCARD_CS=4
+    -DSDCARD_MISO=SPI_MISO_PIN
+    -DSDCARD_MOSI_PIN=SPI_MOSI_PIN
+    -DSDCARD_SCK_PIN=SPI_SCK_PIN
+
+    ; Touch (XPT2046 ou similar)
+    -DTOUCH_CS=33
+    -DTOUCH_IRQ=-1
