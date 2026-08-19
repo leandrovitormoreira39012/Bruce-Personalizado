@@ -1,27 +1,32 @@
-; Esp32 S3 N16R8 + Display TFT 2.8 240x320 + Touch + SD Card + Nrf24l01 + Cc1101 + Módulo IR 
-
-board = [esp32-s3-devkitc-1-psram]
-board_build.partitions = custom_16Mb.csv
-board_upload.maximum_size = 16777216
-build_src_filter = ${env.build_src_filter} +<../boards/Marauder-Radio>
+[env:teste-tela-apenas]
 extends = env:esp32-s3-devkitc-1
+board = esp32-s3-devkitc-1
+board_build.partitions = custom_16Mb.csv
+build_src_filter = ${env.build_src_filter} +<../boards/Marauder-Radio>
 build_flags =
-	${env:esp32-s3-devkitc-1.build_flags}
-	-D BOARD_HAS_PSRAM=1
--Iboards/Marauder-Radio
-    -DDEVICE_NAME='"Marauder Radio"'
+    ${env:esp32-s3-devkitc-1.build_flags}
+    -D BOARD_HAS_PSRAM=1
+    -Iboards/Marauder-Radio
+    -DDEVICE_NAME='"Teste Tela"'
 
-	; SPI (compartilhado)
+    ; --- 1. O Barramento SPI (Os 4 pinos principais que alimentam a tela) ---
+    -DSCK=18
+    -DMOSI=23
+    -DMISO=19
+    -DSS=5
     -DSPI_SCK_PIN=18
     -DSPI_MOSI_PIN=23
     -DSPI_MISO_PIN=19
     -DSPI_SS_PIN=5
 
-	; Display 2.8 ST7789 240x320 + Touchscreen
+    ; --- 2. A Configuração do Display ST7789 ---
     -DST7789_DRIVER=1
-	-DHAS_SCREEN=1
+    -DHAS_SCREEN=1
     -DTFT_WIDTH=240
     -DTFT_HEIGHT=320
+    -DUSER_SETUP_LOADED=1
+    -DSMOOTH_FONT=1
+    -DCGRAM_OFFSET=1
     -DTFT_MISO=SPI_MISO_PIN
     -DTFT_MOSI=SPI_MOSI_PIN
     -DTFT_SCK=SPI_SCK_PIN
@@ -29,50 +34,3 @@ build_flags =
     -DTFT_DC=16
     -DTFT_RST=15
     -DTFT_BL=14
-    -DTOUCH_CS=21
-
-	; SD card (SPI)
-    -DSDCARD_CS=4
-    -DSDCARD_MISO=SPI_MISO_PIN
-    -DSDCARD_MOSI_PIN=SPI_MOSI_PIN
-    -DSDCARD_SCK_PIN=SPI_SCK_PIN
-
-    ; Touch (XPT2046 ou similar)
-    -DTOUCH_CS=33
-    -DTOUCH_IRQ=-1
-
-    ; Nrf24l01+Pna (2.4G.hz)
-    -DNRF24_CE_PIN=25
-    -DNRF24_SS_PIN=SPI_SS_PIN
-
-    ; Cc1101(433mhz)
-    -DCC1101_GDO0_PIN=26
-    -DCC1101_SS_PIN=22
-
-    ; Infravermelho (HX-53, HX-M121)
-    -DIR_TX_PIN=27
-    -DIR_RX_PIN=33
-
-    ; GPS (Neo 6m V2)
-    -DSERIAL_TX=39
-    -DSERIAL_RX=40
-    -DGPS_SERIAL_TX=SERIAL_TX
-    -DGPS_SERIAL_RX=SERIAL_RX
-
-    ; PN532 - NFC (I2C)
-    -DSYS_I2C_SDA=4
-    -DSYS_I2C_SCL=5
-
-    ; Joystick (ky043)
-    -DJOY_VRX=36
-    -DJOY_VRY=37
-    -DJOY_SW=6
-
-lib_deps =
-    ${env.lib_deps}
-
-
-
-
-
-
