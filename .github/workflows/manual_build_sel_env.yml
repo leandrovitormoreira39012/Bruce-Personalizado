@@ -66,6 +66,7 @@ on:
           - "Awok-Touch"
           - "WaveSentry-R1"
           - "LAUNCHER_WaveSentry-R1"
+          - "ESP32-30P-ST7735-PT-BR"
 
 jobs:
   compile_selected:
