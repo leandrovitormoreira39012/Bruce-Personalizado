@@ -26,7 +26,7 @@
 #define HAS_5_BUTTONS 1
 #define SEL_BTN 34
 #define UP_BTN 36
-#define DWN_BTN 35
+#define DW_BTN 35
 #define R_BTN 39
 #define L_BTN 13
 #define BTN_ALIAS "OK"
