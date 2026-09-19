@@ -26,6 +26,7 @@
 #define HAS_5_BUTTONS 1
 #define SEL_BTN 34
 #define UP_BTN 36
+#define DWN_BTN 35
 #define DW_BTN 35
 #define R_BTN 39
 #define L_BTN 13
@@ -65,6 +66,10 @@
 #define HAS_PN532 1
 #define PN532_SDA 33
 #define PN532_SCL 26
+
+// --- Módulo BadUSB / CH9329 ---
+#define BAD_RX -1
+#define BAD_TX -1
 
 #define FP 1
 #define FM 1
