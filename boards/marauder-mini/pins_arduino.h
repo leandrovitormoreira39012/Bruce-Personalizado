@@ -7,65 +7,20 @@
 #define USB_VID 0x303a
 #define USB_PID 0x1001
 
-static const uint8_t TX = 43;
-static const uint8_t RX = 44;
-
-static const uint8_t TXD2 = 1;
-static const uint8_t RXD2 = 2;
-
-static const uint8_t SDA = 13;
-static const uint8_t SCL = 15;
-
-// Modified elsewhere
-static const uint8_t SS = -1;
-static const uint8_t MOSI = -1;
-static const uint8_t MISO = -1;
-static const uint8_t SCK = -1;
-
-static const uint8_t G0 = 0;
-static const uint8_t G1 = 1;
-static const uint8_t G2 = 2;
-static const uint8_t G3 = 3;
-static const uint8_t G4 = 4;
-static const uint8_t G5 = 5;
-static const uint8_t G6 = 6;
-static const uint8_t G7 = 7;
-static const uint8_t G8 = 8;
-static const uint8_t G9 = 9;
-static const uint8_t G10 = 10;
-static const uint8_t G11 = 11;
-static const uint8_t G12 = 12;
-static const uint8_t G13 = 13;
-static const uint8_t G14 = 14;
-static const uint8_t G15 = 15;
-static const uint8_t G39 = 39;
-static const uint8_t G40 = 40;
-static const uint8_t G41 = 41;
-static const uint8_t G42 = 42;
-static const uint8_t G43 = 43;
-static const uint8_t G44 = 44;
-static const uint8_t G46 = 46;
-
-static const uint8_t ADC1 = 7;
-static const uint8_t ADC2 = 8;
-
-#define RGB_LED 21
-
-#define BAD_TX 21
-#define BAD_RX 22
-
-// SERIAL (GPS) dedicated pins
-#define SERIAL_TX 21
-#define SERIAL_RX 22
+// --- GPS NEO-6M (Serial 2) ---
+#define SERIAL_TX 22
+#define SERIAL_RX 21
 #define GPS_SERIAL_TX SERIAL_TX
 #define GPS_SERIAL_RX SERIAL_RX
+
+// --- Joystick 5-Way Switch ---
 #define HAS_BTN 1
+#define HAS_5_BUTTONS 1
 #define SEL_BTN 34
 #define UP_BTN 36
 #define DW_BTN 35
 #define R_BTN 39
 #define L_BTN 13
-#define HAS_5_BUTTONS
 #define BTN_ALIAS "\"Ok\""
 #define BTN_ACT LOW
 
@@ -73,17 +28,29 @@ static const uint8_t ADC2 = 8;
 #define LED_ON HIGH
 #define LED_OFF LOW
 
-#define CC1101_GDO0_PIN -1
-#define CC1101_SS_PIN -1
+// --- Módulo CC1101 (Sub-GHz) ---
+#define CC1101_GDO0_PIN 2
+#define CC1101_SS_PIN 15
 #define CC1101_MOSI_PIN SPI_MOSI_PIN
 #define CC1101_SCK_PIN SPI_SCK_PIN
 #define CC1101_MISO_PIN SPI_MISO_PIN
 
-#define NRF24_CE_PIN -1
-#define NRF24_SS_PIN -1
+// --- Módulo NRF24L01+PA+LNA (2.4GHz) ---
+#define NRF24_CE_PIN 12
+#define NRF24_SS_PIN 14
 #define NRF24_MOSI_PIN SPI_MOSI_PIN
 #define NRF24_SCK_PIN SPI_SCK_PIN
 #define NRF24_MISO_PIN SPI_MISO_PIN
+
+// --- Módulos IR (Infravermelho) ---
+#define HAS_IR 1
+#define IR_TX_PIN 25
+#define IR_RX_PIN 27
+
+// --- Módulo PN532 (NFC / RFID via I2C) ---
+#define HAS_PN532 1
+#define PN532_SDA 33
+#define PN532_SCL 26
 
 #define FP 1
 #define FM 1
@@ -93,17 +60,20 @@ static const uint8_t ADC2 = 8;
 #define ROTATION 0
 #define MINBRIGHT 160
 
+// --- Cartão Micro SD ---
 #define SDCARD_CS 4
 #define SDCARD_SCK 18
 #define SDCARD_MISO 19
 #define SDCARD_MOSI 23
 
+// --- Barramento I2C Auxiliar ---
 #define GROVE_SDA 33
 #define GROVE_SCL 26
 
+// --- Barramento SPI Principal (Compartilhado) ---
 #define SPI_SCK_PIN 18
 #define SPI_MISO_PIN 19
 #define SPI_MOSI_PIN 23
-#define SPI_SS_PIN 1
+#define SPI_SS_PIN 17
 
 #endif /* Pins_Arduino_h */
