@@ -4,8 +4,16 @@
 #include "soc/soc_caps.h"
 #include <stdint.h>
 
-#define USB_VID 0x303a
+#define USB_VID 0x303A
 #define USB_PID 0x1001
+
+// --- Definições Padrão exigidas pelo Framework Arduino (Fix Wire & SPI) ---
+#define SDA 21
+#define SCL 22
+#define SCK 18
+#define MISO 19
+#define MOSI 23
+#define SS 17
 
 // --- GPS NEO-6M (Serial 2) ---
 #define SERIAL_TX 22
@@ -18,15 +26,21 @@
 #define HAS_5_BUTTONS 1
 #define SEL_BTN 34
 #define UP_BTN 36
-#define DW_BTN 35
+#define DWN_BTN 35
 #define R_BTN 39
 #define L_BTN 13
-#define BTN_ALIAS "\"Ok\""
+#define BTN_ALIAS "OK"
 #define BTN_ACT LOW
 
 #define TXLED -1
-#define LED_ON HIGH
+#define LED_IN HIGH
 #define LED_OFF LOW
+
+// --- Barramento SPI Principal (Compartilhado) ---
+#define SPI_SCK_PIN 18
+#define SPI_MISO_PIN 19
+#define SPI_MOSI_PIN 23
+#define SPI_SS_PIN 17
 
 // --- Módulo CC1101 (Sub-GHz) ---
 #define CC1101_GDO0_PIN 2
@@ -58,7 +72,7 @@
 
 #define HAS_SCREEN 1
 #define ROTATION 0
-#define MINBRIGHT 160
+#define TFT_BRIGHT 160
 
 // --- Cartão Micro SD ---
 #define SDCARD_CS 4
@@ -69,11 +83,5 @@
 // --- Barramento I2C Auxiliar ---
 #define GROVE_SDA 33
 #define GROVE_SCL 26
-
-// --- Barramento SPI Principal (Compartilhado) ---
-#define SPI_SCK_PIN 18
-#define SPI_MISO_PIN 19
-#define SPI_MOSI_PIN 23
-#define SPI_SS_PIN 17
 
 #endif /* Pins_Arduino_h */
