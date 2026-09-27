@@ -1,77 +1,97 @@
-#include "core/powerSave.h"
-
 #include <Arduino.h>
+#include "core/powerSave.h"
 #include <interface.h>
 
-/***************************************************************************************
-** Function name: _setup_gpio()
-** Location: main.cpp
-** Description: initial setup for the device
-***************************************************************************************/
+
+// ============================================================
+// BRUCE - CHATGPT
+// ESP32-S3 N16R8
+// Interface personalizada
+// ============================================================
+
+
+// ============================================================
+// INICIALIZAÇÃO DOS GPIOs
+// ============================================================
 
 void _setup_gpio() {
+    // A configuração específica dos periféricos será feita
+    // pelos módulos do Bruce.
 }
 
-/***************************************************************************************
-** Function name: _post_setup_gpio()
-** Location: main.cpp
-** Description: second stage gpio setup
-***************************************************************************************/
+
+// ============================================================
+// PÓS-INICIALIZAÇÃO
+// ============================================================
 
 void _post_setup_gpio() {
+    // Reservado para inicializações adicionais.
 }
 
-/***************************************************************************************
-** Function: getBattery()
-** Location: display.cpp
-** Description: Delivers the battery value from 1-100
-***************************************************************************************/
+
+// ============================================================
+// BATERIA
+// ============================================================
 
 int getBattery() {
+    // Temporariamente retorna 100%.
+    // A leitura real será ativada quando confirmarmos
+    // o divisor de tensão da bateria.
+
     return 100;
 }
 
-/***************************************************************************************
-** Function: isCharging()
-** Description: Battery charging status
-***************************************************************************************/
+
+// ============================================================
+// CARREGAMENTO
+// ============================================================
 
 bool isCharging() {
+    // O circuito TP4056 ainda não possui um GPIO de
+    // indicação de carregamento definido.
+
     return false;
 }
 
-/***************************************************************************************
-** Function: setBrightness
-** Location: settings.cpp
-** Description: Set display brightness
-***************************************************************************************/
+
+// ============================================================
+// BRILHO
+// ============================================================
 
 void _setBrightness(uint8_t brightval) {
+    // O LED/backlight da tela está ligado diretamente ao 3V3.
+    // Portanto, não há controle de brilho por GPIO neste momento.
+
+    (void)brightval;
 }
 
-/***************************************************************************************
-** Function: InputHandler
-** Description: Handles device input
-***************************************************************************************/
+
+// ============================================================
+// ENTRADAS
+// ============================================================
 
 void InputHandler(void) {
+    // As entradas do JY050 serão integradas aqui conforme
+    // o sistema de entrada utilizado pelo Bruce.
 }
 
-/***************************************************************************************
-** Function: powerOff
-** Location: mykeyboard.cpp
-** Description: Turns off the device
-***************************************************************************************/
+
+// ============================================================
+// DESLIGAMENTO
+// ============================================================
 
 void powerOff() {
+    // Implementação de desligamento será adicionada quando
+    // definirmos o circuito de alimentação/controle.
 }
 
-/***************************************************************************************
-** Function: checkReboot
-** Location: mykeyboard.cpp
-** Description: Reboot handling
-***************************************************************************************/
+
+// ============================================================
+// REINICIALIZAÇÃO
+// ============================================================
 
 void checkReboot() {
+    // O RST do JY050 está conectado diretamente ao EN
+    // da ESP32-S3, portanto o reset físico já é realizado
+    // pelo próprio circuito.
 }
-
