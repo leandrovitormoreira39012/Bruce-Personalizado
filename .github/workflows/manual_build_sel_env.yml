@@ -14,7 +14,7 @@ on:
         default: 'lilygo-t-embed-cc1101'
         type: choice
         options:
-          - "m5stack-cardputer"
+          - "chatgpt"
           - "m5stack-cplus2"
           - "m5stack-cplus1_1"
           - "LAUNCHER_m5stack-cplus1_1"
