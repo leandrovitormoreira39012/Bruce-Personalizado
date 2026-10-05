@@ -24,16 +24,16 @@
 // --- Joystick 5-Way + Botão ESC/Voltar ---
 #define HAS_BTN 1
 #define HAS_5_BUTTONS 1
-#define SEL_BTN 34
-#define UP_BTN 36
-#define DWN_BTN 35
-#define DW_BTN 35
-#define R_BTN 39
-#define L_BTN 13
+#define SEL_BTN 34    // Pino D34
+#define UP_BTN 36     // Pino VP
+#define DWN_BTN 35    // Pino D35
+#define DW_BTN 35     // Pino D35
+#define R_BTN 39      // Pino VN
+#define L_BTN 13      // Pino D13
 #define BTN_ALIAS "OK"
 #define BTN_ACT LOW
 
-// Botão ESC / VOLTAR (Botão BOOT do ESP32 ou botão externo ao GND)
+// Botão ESC / VOLTAR (Botão BOOT integrado na placa)
 #define HAS_BACK_BTN 1
 #define BACK_BTN 0
 #define ESC_BTN 0
@@ -41,6 +41,10 @@
 #define TXLED -1
 #define LED_IN HIGH
 #define LED_OFF LOW
+
+// --- Módulos Desativados / Compatibilidade de Código ---
+#define BAD_RX -1
+#define BAD_TX -1
 
 // --- Módulo CC1101 (Sub-GHz) ---
 #define CC1101_GDO0_PIN 2
@@ -75,6 +79,6 @@
 // --- Configuração Geral de Tela ---
 #define HAS_SCREEN 1
 #define ROTATION 0
-#define TFT_BRIGHT 255  // Brilho no máximo absoluto (scale 0..255)
+#define TFT_BRIGHT 255
 
 #endif /* Pins_Arduino_h */
