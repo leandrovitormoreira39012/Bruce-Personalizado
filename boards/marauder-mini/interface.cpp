@@ -13,6 +13,13 @@ void _setup_gpio() {
     pinMode(R_BTN, INPUT);
     pinMode(L_BTN, INPUT);
 
+    // Inicialização do novo botão dedicado ESC/VOLTAR (GPIO 0)
+#if defined(BACK_BTN)
+    pinMode(BACK_BTN, INPUT_PULLUP);
+#elif defined(ESC_BTN)
+    pinMode(ESC_BTN, INPUT_PULLUP);
+#endif
+
     bruceConfig.colorInverted = 0;
     bruceConfigPins.rotation = 0; // portrait mode for Phantom
 }
@@ -22,7 +29,10 @@ void _setup_gpio() {
 ** Location: main.cpp
 ** Description:   second stage gpio setup to make a few functions work
 ***************************************************************************************/
-void _post_setup_gpio() { pinMode(TFT_BL, OUTPUT); }
+void _post_setup_gpio() { 
+    pinMode(TFT_BL, OUTPUT); 
+    digitalWrite(TFT_BL, HIGH); // Ativa o brilho máximo da tela
+}
 
 /***************************************************************************************
 ** Function name: getBattery()
@@ -62,15 +72,36 @@ void InputHandler(void) {
     bool r = digitalRead(R_BTN);
     bool l = digitalRead(L_BTN);
     bool s = digitalRead(SEL_BTN);
-    if (!s || !u || !d || !r || !l) {
+
+    // Leitura do novo botão dedicado de ESC/VOLTAR (GPIO 0)
+#if defined(BACK_BTN)
+    bool b = digitalRead(BACK_BTN);
+#elif defined(ESC_BTN)
+    bool b = digitalRead(ESC_BTN);
+#else
+    bool b = HIGH;
+#endif
+
+    // Detecta se qualquer botão foi pressionado para acender/acordar a tela
+    if (!s || !u || !d || !r || !l || !b) {
         tm = millis();
         if (!wakeUpScreen()) AnyKeyPress = true;
         else return;
     }
+
+    // 1. Ação Instantânea do Botão Físico ESC (GPIO 0 / BOOT)
+    if (!b) {
+        EscPress = true;
+        return;
+    }
+
+    // 2. Atalho combinado (Esquerda + Selecionar)
     if (!l && !s) {
         EscPress = true;
         return;
     }
+
+    // 3. Pressionamento longo no botão Esquerda (Segurar 1 segundo para ESC)
     if (!l) {
         PrevPress = true;
         if (esc_armed == false) {
@@ -84,6 +115,7 @@ void InputHandler(void) {
         PrevPress = false;
         EscPress = true;
     }
+
     if (!r) NextPress = true;
     if (!u) UpPress = true;
     if (!d) DownPress = true;
