@@ -2,13 +2,31 @@
 #include <interface.h>
 
 void _setup_gpio() {
+    // 1. Força o acionamento do Backlight no GPIO 32 imediatamente na inicialização
+    pinMode(32, OUTPUT);
+    digitalWrite(32, HIGH);
+
+    // 2. Desativa outros barramentos CS para não interferir na inicialização do display
+    pinMode(15, OUTPUT); digitalWrite(15, HIGH); // CC1101 CS
+    pinMode(14, OUTPUT); digitalWrite(14, HIGH); // NRF24 CS
+    pinMode(4, OUTPUT);  digitalWrite(4, HIGH);  // SD CS
+    pinMode(5, OUTPUT);  digitalWrite(5, HIGH);  // TFT CS
+
+    // 3. Pulso de Reset Físico no Display (GPIO 17) para destravar o ST7735
+    pinMode(17, OUTPUT);
+    digitalWrite(17, LOW);
+    delay(100);
+    digitalWrite(17, HIGH);
+    delay(100);
+
+    // Configuração dos Botões de Navegação
     pinMode(UP_BTN, INPUT);
     pinMode(DWN_BTN, INPUT);
     pinMode(R_BTN, INPUT);
     pinMode(L_BTN, INPUT);
     pinMode(SEL_BTN, INPUT);
 
-    // Inicialização do Botão Físico Vermelho (ESC / VOLTAR)
+    // Botão Físico ESC no Pino D2 (GPIO 2)
 #if defined(BACK_BTN)
     pinMode(BACK_BTN, INPUT_PULLUP);
 #elif defined(ESC_BTN)
@@ -17,7 +35,6 @@ void _setup_gpio() {
 
     bruceConfig.colorInverted = 0;
 
-    // Aplica a rotação configurada no pins_arduino.h (0, 1, 2 ou 3)
 #ifdef ROTATION
     bruceConfigPins.rotation = ROTATION;
 #else
@@ -31,7 +48,7 @@ void _setup_gpio() {
 
 void _post_setup_gpio() {
     pinMode(TFT_BL, OUTPUT);
-    digitalWrite(TFT_BL, HIGH); // Ativa o backlight da tela no GPIO 32
+    digitalWrite(TFT_BL, HIGH);
 }
 
 int getBattery() {
@@ -60,7 +77,6 @@ void InputHandler(void) {
     bool l = digitalRead(L_BTN);
     bool s = digitalRead(SEL_BTN);
 
-    // Leitura do Botão Vermelho Físico ESC (Ativo em nível LOW via INPUT_PULLUP)
 #if defined(BACK_BTN)
     bool b = (digitalRead(BACK_BTN) == LOW);
 #elif defined(ESC_BTN)
@@ -69,26 +85,22 @@ void InputHandler(void) {
     bool b = false;
 #endif
 
-    // Detecta se qualquer botão foi pressionado para acender/acordar a tela
     if (s || u || d || r || l || b) {
         tm = millis();
         if (!wakeUpScreen()) AnyKeyPress = true;
         else return;
     }
 
-    // 1. Ação Instantânea do Botão Físico Vermelho ESC (Voltando direto ao menu)
     if (b) {
         EscPress = true;
         return;
     }
 
-    // 2. Atalho combinado (Esquerda + Selecionar)
     if (l && s) {
         EscPress = true;
         return;
     }
 
-    // 3. Pressionamento longo no botão Esquerda (Segurar por 1 segundo para acionar ESC)
     if (l) {
         PrevPress = true;
         if (esc_armed == false) {
@@ -105,17 +117,11 @@ void InputHandler(void) {
         esc_armed = false;
     }
 
-    // Mapeamento das ações dos botões direcionais
     if (r) NextPress = true;
     if (u) UpPress = true;
     if (d) DownPress = true;
     if (s) SelPress = true;
 }
 
-void powerOff() {
-    // Função para desligamento por software (se implementado)
-}
-
-void checkReboot() {
-    // Verificação de reinicialização
-}
+void powerOff() {}
+void checkReboot() {}
