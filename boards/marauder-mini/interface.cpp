@@ -9,29 +9,29 @@ void _setup_gpio() {
     pinMode(SEL_BTN, INPUT);
 
     // Inicialização do Botão Físico Vermelho (ESC / VOLTAR)
-    #if defined(BACK_BTN)
-        pinMode(BACK_BTN, INPUT_PULLUP);
-    #elif defined(ESC_BTN)
-        pinMode(ESC_BTN, INPUT_PULLUP);
-    #endif
+#if defined(BACK_BTN)
+    pinMode(BACK_BTN, INPUT_PULLUP);
+#elif defined(ESC_BTN)
+    pinMode(ESC_BTN, INPUT_PULLUP);
+#endif
 
     bruceConfig.colorInverted = 0;
 
     // Aplica a rotação configurada no pins_arduino.h (0, 1, 2 ou 3)
-    #ifdef ROTATION
-        bruceConfigPins.rotation = ROTATION;
-    #else
-        bruceConfigPins.rotation = 1;
-    #endif
+#ifdef ROTATION
+    bruceConfigPins.rotation = ROTATION;
+#else
+    bruceConfigPins.rotation = 1;
+#endif
 
-    #if defined(HAS_SCREEN) && HAS_SCREEN
-        tft.setRotation(bruceConfigPins.rotation);
-    #endif
+#if defined(HAS_SCREEN) && HAS_SCREEN
+    tft.setRotation(bruceConfigPins.rotation);
+#endif
 }
 
 void _post_setup_gpio() {
     pinMode(TFT_BL, OUTPUT);
-    digitalWrite(TFT_BL, HIGH); // Ativa o backlight da tela
+    digitalWrite(TFT_BL, HIGH); // Ativa o backlight da tela no GPIO 32
 }
 
 int getBattery() {
@@ -52,7 +52,7 @@ void InputHandler(void) {
     static unsigned long esc_tm = millis();
     static bool esc_armed = false;
 
-    if (!(millis() - tm > 200 || LongPress)) return;
+    if ((millis() - tm > 200 || LongPress)) return;
 
     bool u = digitalRead(UP_BTN);
     bool d = digitalRead(DWN_BTN);
@@ -61,18 +61,18 @@ void InputHandler(void) {
     bool s = digitalRead(SEL_BTN);
 
     // Leitura do Botão Vermelho Físico ESC (Ativo em nível LOW via INPUT_PULLUP)
-    #if defined(BACK_BTN)
-        bool b = (digitalRead(BACK_BTN) == LOW);
-    #elif defined(ESC_BTN)
-        bool b = (digitalRead(ESC_BTN) == LOW);
-    #else
-        bool b = false;
-    #endif
+#if defined(BACK_BTN)
+    bool b = (digitalRead(BACK_BTN) == LOW);
+#elif defined(ESC_BTN)
+    bool b = (digitalRead(ESC_BTN) == LOW);
+#else
+    bool b = false;
+#endif
 
     // Detecta se qualquer botão foi pressionado para acender/acordar a tela
     if (s || u || d || r || l || b) {
         tm = millis();
-        if (wakeUpScreen()) AnyKeyPress = true;
+        if (!wakeUpScreen()) AnyKeyPress = true;
         else return;
     }
 
