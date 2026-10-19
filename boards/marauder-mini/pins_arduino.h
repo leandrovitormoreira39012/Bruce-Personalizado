@@ -7,13 +7,13 @@
 #define USB_VID 0x303A
 #define USB_PID 0x1001
 
-// --- Definições Padrão de Barramento SPI (Exigidas pela biblioteca SPI.cpp) ---
+// --- Definições Padrão de Barramento SPI ---
 #define SCK 18
 #define MISO 19
 #define MOSI 23
-#define SS 5 // Ajustado para GPIO 5 conforme a Foto 1 (CS da Tela)
+#define SS 5 // CS da Tela ST7735
 
-// --- Barramento SPI Principal (Compartilhado para Módulos) ---
+// --- Barramento SPI Principal ---
 #define SPI_SCK_PIN SCK
 #define SPI_MISO_PIN MISO
 #define SPI_MOSI_PIN MOSI
@@ -34,22 +34,22 @@
 #define BTN_ALIAS "OK"
 #define BTN_ACT LOW
 
-// --- Botão ESC / VOLTAR (Botão Vermelho Dedicado / BOOT) ---
+// --- Botão ESC / VOLTAR (Mapeado no Pino D2 / GPIO 2) ---
 #define HAS_BACK_BTN 1
-#define BACK_BTN 0
-#define ESC_BTN 0
+#define BACK_BTN 2
+#define ESC_BTN 2
 
 #define TXLED -1
 #define LED_IN HIGH
 #define LED_OFF LOW
 
-// --- Módulos Desativados / Compatibilidade de Código ---
+// --- Módulos Desativados / Compatibilidade ---
 #define BAD_RX -1
 #define BAD_TX -1
 
 // --- Módulo CC1101 (Sub-GHz) ---
 #define HAS_CC1101 1
-#define CC1101_GDO0_PIN 2
+#define CC1101_GDO0_PIN 4
 #define CC1101_SS_PIN 15
 #define CC1101_MOSI_PIN SPI_MOSI_PIN
 #define CC1101_SCK_PIN SPI_SCK_PIN
