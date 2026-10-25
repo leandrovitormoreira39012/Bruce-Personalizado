@@ -1,156 +1,36 @@
-#include "core/powerSave.h"
-#include "core/utils.h"
-#include <CYD28_TouchscreenR.h>
-#include <interface.h>
-CYD28_TouchR touch(320, 240);
+#ifndef Pins_Arduino_h
+#define Pins_Arduino_h
 
-#ifdef WAVESENTRY
-#include <rotary_decoder.h>
-RotaryDecoder *encoder = nullptr;
-void pollEncoder(void) { encoder->poll(); }
+#include <stdint.h>
+
+// Barramento SPI Compartilhado (Tela, SD, NRF24, CC1101)
+static const uint8_t SCK  = 6;
+static const uint8_t MOSI = 7;
+static const uint8_t MISO = 5;
+
+// Display ST7789
+static const uint8_t TFT_CS   = 10;
+static const uint8_t TFT_DC   = 9;
+static const uint8_t TFT_RST  = 12; // GPIO12 (Atenção ao guia: não ligar RESET ao 3V3)
+static const uint8_t TFT_LED  = 11; // GPIO11 (Controle de LED)
+
+// Leitor SD e Touch
+static const uint8_t SD_CS    = 8;
+static const uint8_t T_CS     = 4;
+
+// Módulos de Rádio (NRF24L01 e CC1101)
+static const uint8_t NRF_CSN  = 16;
+static const uint8_t NRF_CE   = 48;
+static const uint8_t CC1101_CSN = 14;
+static const uint8_t CC1101_GDO0 = 15;
+
+// Botões (JY050)
+static const uint8_t BTN_UP   = 38;
+static const uint8_t BTN_DWN  = 39;
+static const uint8_t BTN_LEFT = 40;
+static const uint8_t BTN_RHT  = 41;
+static const uint8_t BTN_MID  = 42;
+static const uint8_t BTN_SET  = 13;
+static const uint8_t BTN_RST  = 47;
+
 #endif
-
-/***************************************************************************************
-** Function name: _setup_gpio()
-** Location: main.cpp
-** Description:   initial setup for the device
-***************************************************************************************/
-void _setup_gpio() {
-    bruceConfig.colorInverted = 0;
-    bruceConfigPins.rotation = 0; // portrait mode for Phantom
-    pinMode(TFT_BL, OUTPUT);
-#ifdef WAVESENTRY
-    pinMode(ENCODER_KEY, INPUT);
-    pinMode(ENCODER_INA, INPUT_PULLUP);
-    pinMode(ENCODER_INB, INPUT_PULLUP);
-    encoder = new RotaryDecoder();
-    encoder->begin(ENCODER_INA, ENCODER_INB, 2);
-#endif
-}
-
-/***************************************************************************************
-** Function name: _post_setup_gpio()
-** Location: main.cpp
-** Description:   second stage gpio setup to make a few functions work
-***************************************************************************************/
-void _post_setup_gpio() {
-    if (!touch.begin(&tft.getSPIinstance())) {
-        Serial.println("Touch IC not Started");
-        log_i("Touch IC not Started");
-    } else Serial.println("Touch IC Started");
-}
-
-/***************************************************************************************
-** Function name: getBattery()
-** location: display.cpp
-** Description:   Delivers the battery value from 1-100
-***************************************************************************************/
-int getBattery() { return 0; }
-
-/*********************************************************************
-** Function: setBrightness
-** location: settings.cpp
-** set brightness value
-**********************************************************************/
-void _setBrightness(uint8_t brightval) {
-    if (brightval > 5) digitalWrite(TFT_BL, HIGH);
-    else digitalWrite(TFT_BL, LOW);
-}
-
-/*********************************************************************
-** Function: InputHandler
-** Handles the variables PrevPress, NextPress, SelPress, AnyKeyPress and EscPress
-**********************************************************************/
-void InputHandler(void) {
-    static unsigned long tm = millis();
-    if (millis() - tm > 300 || LongPress) { // don´t allow multiple readings in less than 200ms
-        if (touch.touched()) {
-            auto t = touch.getPointScaled();
-            t = touch.getPointScaled();
-            tm = millis();
-            if (bruceConfigPins.rotation == 3) {
-                t.y = (tftHeight + 20) - t.y;
-                t.x = tftWidth - t.x;
-            }
-            if (bruceConfigPins.rotation == 0) {
-                int tmp = t.x;
-                t.x = tftWidth - t.y;
-                t.y = tmp;
-            }
-            if (bruceConfigPins.rotation == 2) {
-                int tmp = t.x;
-                t.x = t.y;
-                t.y = (tftHeight + 20) - tmp;
-            }
-            Serial.printf("Touched at x=%d, y=%d, rot=%d\n", t.x, t.y, bruceConfigPins.rotation);
-
-            if (!wakeUpScreen()) AnyKeyPress = true;
-            else return;
-
-            // Touch point global variable
-            touchPoint.x = t.x;
-            touchPoint.y = t.y;
-            touchPoint.pressed = true;
-            touchHeatMap(touchPoint);
-        } else touchPoint.pressed = false;
-    }
-
-#ifdef WAVESENTRY
-    static unsigned long lastEncoderMoveMs = 0;
-    static int posDifference = 0;
-    static int lastPos = 0;
-    bool sel = !BTN_ACT;
-
-    int newPos = encoder->getPosition();
-    if (newPos != lastPos) {
-        posDifference += (newPos - lastPos);
-        // Independent running total for consumers that want to apply the
-        // full pending backlog in one pass instead of one step at a time
-        // (see drainRotarySteps() in globals.h). Never cleared by the
-        // stale-drop below -- it's drained exactly, not time-limited.
-        RotaryNetSteps += (newPos - lastPos);
-        lastPos = newPos;
-        lastEncoderMoveMs = millis();
-    } else if (posDifference != 0 && millis() - lastEncoderMoveMs > 30) {
-        // Drop any stale queued steps once the encoder has stopped moving.
-        posDifference = 0;
-    }
-
-    if (millis() - tm < 200 && !LongPress) return;
-
-    sel = digitalRead(ENCODER_KEY);
-
-    if (posDifference != 0 || sel == BTN_ACT) {
-        if (!wakeUpScreen()) AnyKeyPress = true;
-        else return;
-    }
-    if (posDifference > 0) {
-        PrevPress = true;
-        posDifference--;
-    }
-    if (posDifference < 0) {
-        NextPress = true;
-        posDifference++;
-    }
-
-    if (sel == BTN_ACT) {
-        posDifference = 0;
-        SelPress = true;
-        tm = millis();
-    }
-#endif
-}
-
-/*********************************************************************
-** Function: powerOff
-** location: mykeyboard.cpp
-** Turns off the device (or try to)
-**********************************************************************/
-void powerOff() {}
-
-/*********************************************************************
-** Function: checkReboot
-** location: mykeyboard.cpp
-** Btn logic to turn off the device (name is odd btw)
-**********************************************************************/
-void checkReboot() {}
