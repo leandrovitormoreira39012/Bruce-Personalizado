@@ -19,22 +19,22 @@
 #define SPI_MOSI_PIN MOSI
 #define SPI_SS_PIN SS
 
-// --- Definições Padrão de I2C ---
+// --- Definição Padrão de I2C ---
 #define SDA 21
 #define SCL 22
 
 // --- Navegação: Joystick / Botões Direcionais ---
 #define HAS_BTN 1
 #define HAS_5_BUTTONS 1
-#define SEL_BTN 34 // Pino D34
+#define SEL_BTN 34 // Pino 34
 #define UP_BTN 36  // Pino VP
-#define DWN_BTN 35 // Pino D35
+#define DWN_BTN 35 // Pino 35
 #define R_BTN 39   // Pino VN
-#define L_BTN 13   // Pino D13
+#define L_BTN 12   // Pino D12
 #define BTN_ALIAS "OK"
 #define BTN_ACT LOW
 
-// --- Botão ESC / VOLTAR (Mapeado no Pino D2 / GPIO 2) ---
+// --- Botão ESC / VOLTAR (Mapeado no Pino 02 / GPIO 2) ---
 #define HAS_BACK_BTN 1
 #define BACK_BTN 2
 #define ESC_BTN 2
@@ -70,17 +70,17 @@
 
 // --- Módulo PN532 (NFC / RFID via I2C) ---
 #define HAS_PN532 1
-#define PN532_SDA 33
-#define PN532_SCL 26
+#define PN532_SDA 21
+#define PN532_SCL 22
 
 // --- Cartão Micro SD (SPI) ---
 #define HAS_SD 1
 #define SDCARD_CS 4
-#define SDCARD_SCK SPI_SCK_PIN
-#define SDCARD_MISO SPI_MISO_PIN
-#define SDCARD_MOSI SPI_MOSI_PIN
+#define SDCARD_SCK_PIN SPI_SCK_PIN
+#define SDCARD_VISD_PIN SPI_MISO_PIN
+#define SDCARD_MOSI_PIN SPI_MOSI_PIN
 
-// --- Configuração Geral de Tela ---
+// --- Configuração General de Tela ---
 #define HAS_SCREEN 1
 #define ROTATION 1
 #define TFT_BRIGHT 255
