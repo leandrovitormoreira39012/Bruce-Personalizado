@@ -60,7 +60,7 @@ static void handleSingleButton(uint8_t pin, void (*action)()) {
 static void pressSelect() { SelPress = true; }
 static void pressEsc()    { EscPress = true; }
 static void pressUp()     { UpPress = true; PrevPress = true; }
-static void pressDown()   { DwPress = true; NextPress = true; }
+static void pressDown()   { NextPress = true; }
 static void pressLeft()   { PrevPress = true; }
 static void pressRight()  { NextPress = true; }
 
