@@ -7,7 +7,25 @@
 #include <interface.h>
 
 #define BTN_ACT LOW
-#define BTN_PIN 0
+
+// Pinos dos 6 botoes fisicos (ligados ao GND quando pressionados)
+#define SEL_BTN_PIN 0   // Selecionar / OK (pull-up interno)
+#define ESC_BTN_PIN 15  // ESC / Voltar ao menu principal (pull-up interno)
+#define R_BTN_PIN   3   // Direita / RX0 (pull-up interno)
+#define L_BTN_PIN   39  // Esquerda / SN (input-only -> usar resistor pull-up 10k para 3.3V)
+#define UP_BTN_PIN  34  // Cima (input-only -> usar resistor pull-up 10k para 3.3V)
+#define DW_BTN_PIN  35  // Baixo (input-only -> usar resistor pull-up 10k para 3.3V)
+
+// Pinos dos modulos configurados na placa
+#define IR_TX_PIN   13
+#define IR_RX_PIN   14
+#define PN532_SDA   33
+#define PN532_SCL   22
+#define CC1101_CS   25
+#define CC1101_GDO0 26
+#define CC1101_GDO2 27
+#define NRF24_CSN   2
+#define NRF24_CE    4
 
 extern CYD28_TouchR touch; // defined by hal/inputs/touch.cpp
 
@@ -26,6 +44,26 @@ static DeviceTouch touchCfg() {
     return cfg;
 }
 
+static void handleSingleButton(uint8_t pin, void (*action)()) {
+    if (digitalRead(pin) == BTN_ACT) {
+        if (!wakeUpScreen()) {
+            AnyKeyPress = true;
+        }
+        action();
+        unsigned long startTime = millis();
+        while ((millis() - startTime) < 180 && digitalRead(pin) == BTN_ACT) {
+            delay(5);
+        }
+    }
+}
+
+static void pressSelect() { SelPress = true; }
+static void pressEsc()    { EscPress = true; }
+static void pressUp()     { UpPress = true; PrevPress = true; }
+static void pressDown()   { DwPress = true; NextPress = true; }
+static void pressLeft()   { PrevPress = true; }
+static void pressRight()  { NextPress = true; }
+
 /***************************************************************************************
 ** Function name: _setup_gpio()
 ** Location: main.cpp
@@ -33,30 +71,53 @@ static DeviceTouch touchCfg() {
 ***************************************************************************************/
 void _setup_gpio() {
     bruceConfigPins.rotation = 1;
-    bruceConfigPins.irTx = 2;
-    bruceConfigPins.i2c_bus = {(gpio_num_t)21, (gpio_num_t)22}; // sda, scl (Grove)
-    bruceConfigPins.rfTx = 21;
-    bruceConfigPins.rfRx = 22;
+
+    // Infravermelho (TX / RX)
+    bruceConfigPins.irTx = IR_TX_PIN;
+    bruceConfigPins.irRx = IR_RX_PIN;
+
+    // I2C / PN532
+    bruceConfigPins.i2c_bus = {(gpio_num_t)PN532_SDA, (gpio_num_t)PN532_SCL};
+    bruceConfigPins.PN532_bus = {
+        (gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)PN532_SDA
+    };
+
+    // RF / UART / GPS / BadUSB
+    bruceConfigPins.rfTx = CC1101_GDO0;
+    bruceConfigPins.rfRx = CC1101_GDO2;
     bruceConfigPins.uart_bus = {(gpio_num_t)3, (gpio_num_t)1};   // rx, tx
     bruceConfigPins.gps_bus = {(gpio_num_t)3, (gpio_num_t)1};    // rx, tx
     bruceConfigPins.badusb_bus = {(gpio_num_t)3, (gpio_num_t)1}; // rx, tx
-    // Board's default/generic SPI bus (used by drivers without their own bus, e.g. RC522-SPI)
-    bruceConfigPins.outer_bus = {(gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)15};
-    // No dedicated PN532 pins on this board; PN532_bus shares the same slot as outer_bus
-    bruceConfigPins.PN532_bus = {(gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)15};
+
+    // Barramentos SPI (sck, miso, mosi, cs, gdo0/ce)
+    bruceConfigPins.outer_bus = {(gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)CC1101_CS};
     bruceConfigPins.CC1101_bus = {
-        (gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)15, (gpio_num_t)2
-    }; // sck,miso,mosi,cs,gdo0
+        (gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)CC1101_CS, (gpio_num_t)CC1101_GDO0
+    };
     bruceConfigPins.NRF24_bus = {
-        (gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)15, (gpio_num_t)4
-    }; // sck,miso,mosi,cs(ss),ce
+        (gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)NRF24_CSN, (gpio_num_t)NRF24_CE
+    };
     bruceConfigPins.SDCARD_bus = {
         (gpio_num_t)18, (gpio_num_t)19, (gpio_num_t)23, (gpio_num_t)12
-    }; // sck,miso,mosi,cs (shares VSPI bus with TFT/touch)
+    };
 
-    // Keep XPT2046 CS high until needed
+    // Garante CS inativos no barramento SPI antes de iniciar os drivers
     pinMode(XPT2046_SPI_CONFIG_CS_GPIO_NUM, OUTPUT);
     digitalWrite(XPT2046_SPI_CONFIG_CS_GPIO_NUM, HIGH);
+    pinMode(CC1101_CS, OUTPUT);
+    digitalWrite(CC1101_CS, HIGH);
+    pinMode(NRF24_CSN, OUTPUT);
+    digitalWrite(NRF24_CSN, HIGH);
+    pinMode(12, OUTPUT);
+    digitalWrite(12, HIGH);
+
+    // Configuracao dos 6 botoes fisicos
+    pinMode(SEL_BTN_PIN, INPUT_PULLUP);
+    pinMode(ESC_BTN_PIN, INPUT_PULLUP);
+    pinMode(R_BTN_PIN,   INPUT_PULLUP);
+    pinMode(L_BTN_PIN,   INPUT);
+    pinMode(UP_BTN_PIN,  INPUT);
+    pinMode(DW_BTN_PIN,  INPUT);
 
     bruceConfig.colorInverted = 1;
 }
@@ -68,16 +129,15 @@ void _setup_gpio() {
 ***************************************************************************************/
 void _post_setup_gpio() {
     // Initialize XPT2046 touch using hardware SPI (shares bus with display)
-    // Initialize XPT2046 touch using hardware SPI (shares bus with display)
     if (!hal_touch_init(touchCfg(), 0, TFT_MOSI == CYD28_TouchR_MOSI)) {
         Serial.println("[TOUCH] XPT2046 not started");
     } else {
         Serial.println("[TOUCH] XPT2046 started OK");
     }
 
-    // Backlight on
+    // Backlight com brilho nativo mais alto (0 a 255)
     hal_bright_attach(TFT_BL);
-    hal_bright_set(TFT_BL, 100);
+    hal_bright_set(TFT_BL, 230);
 }
 
 /*********************************************************************
@@ -102,12 +162,13 @@ void InputHandler(void) {
     }
 
     checkPowerSaveTime();
-    if (digitalRead(BTN_PIN) == BTN_ACT) {
-        if (!wakeUpScreen()) AnyKeyPress = true;
-        SelPress = true;
-        long tmp = millis();
-        while ((millis() - tmp) < 200 && digitalRead(BTN_PIN) == BTN_ACT);
-    }
+
+    handleSingleButton(SEL_BTN_PIN, pressSelect);
+    handleSingleButton(ESC_BTN_PIN, pressEsc);
+    handleSingleButton(UP_BTN_PIN,  pressUp);
+    handleSingleButton(DW_BTN_PIN,  pressDown);
+    handleSingleButton(L_BTN_PIN,   pressLeft);
+    handleSingleButton(R_BTN_PIN,   pressRight);
 }
 
 /*********************************************************************
